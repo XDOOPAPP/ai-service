@@ -11,57 +11,56 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3008
-      - DATABASE_URL=postgresql://fepa:fepa123@postgres:5432/fepa_ai
-      - RABBITMQ_URL=amqp://fepa:fepa123@rabbitmq:5672
-    depends_on:
-      postgres:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
+      - DATABASE_URL=postgresql://fepa:fepa123@fepa-postgres:5432/fepa_ai
+      - RABBITMQ_URL=amqp://fepa:fepa123@fepa-rabbitmq:5672
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
+    #   rabbitmq:
+    #     condition: service_healthy
     networks:
       - fepa-network
     volumes:
       - .:/app
       - /app/node_modules
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: fepa-postgres
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_USER=fepa
+  #     - POSTGRES_PASSWORD=fepa123
+  #     - POSTGRES_DB=fepa_db
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #     - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+  #   networks:
+  #     - fepa-network
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "pg_isready -U fepa" ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
 
-  postgres:
-    image: postgres:15-alpine
-    container_name: fepa-postgres
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=fepa
-      - POSTGRES_PASSWORD=fepa123
-      - POSTGRES_DB=fepa_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-    networks:
-      - fepa-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U fepa" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  rabbitmq:
-    image: rabbitmq:3.12-management-alpine
-    container_name: fepa-rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=fepa
-      - RABBITMQ_DEFAULT_PASS=fepa123
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    networks:
-      - fepa-network
-    healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  # rabbitmq:
+  #   image: rabbitmq:3.12-management-alpine
+  #   container_name: fepa-rabbitmq
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=fepa
+  #     - RABBITMQ_DEFAULT_PASS=fepa123
+  #   volumes:
+  #     - rabbitmq_data:/var/lib/rabbitmq
+  #   networks:
+  #     - fepa-network
+  #   healthcheck:
+  #     test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
 
 networks:
   fepa-network:
