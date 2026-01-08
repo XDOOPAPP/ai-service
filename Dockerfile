@@ -23,4 +23,4 @@ COPY --from=builder /app/package*.json ./
 
 EXPOSE 3008
 
-CMD ["node", "dist/main"]
+CMD ["node", "dist/main.js"]
