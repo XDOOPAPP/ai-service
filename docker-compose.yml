@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   ai-service:
     build:
@@ -15,13 +13,15 @@ services:
       - RABBITMQ_URL=amqp://fepa:fepa123@fepa-rabbitmq:5672
       - JWT_SECRET=${JWT_SECRET:-fepa-key}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL}
+      - AI_CONFIDENCE_THRESHOLD=0.7
+      - ANOMALY_ZSCORE_THRESHOLD=2.5
+      - BUDGET_ALERT_THRESHOLDS=50,80,100
     networks:
       - fepa-network
-    volumes:
-      - .:/app
-      - /app/node_modules
 
 networks:
   fepa-network:
-    name: api-gateway_fepa-network
+    name: fepa-network
     external: true
