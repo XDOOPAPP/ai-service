@@ -51,4 +51,10 @@ export class AiController {
   async getInsights(@Payload() payload: { userId: string; period?: string }) {
     return this.aiService.getInsights(payload.userId, payload.period);
   }
+
+  // Admin endpoints
+  @MessagePattern('ai.admin_stats')
+  async getAdminStats() {
+    return this.aiService.getAdminStats();
+  }
 }

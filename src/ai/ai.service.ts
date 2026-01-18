@@ -333,4 +333,50 @@ export class AiService {
             };
         }
     }
+
+    // ========== ADMIN METHODS ==========
+
+    async getAdminStats() {
+        const [totalConversations, totalMessages, recentConversations] = await Promise.all([
+            this.prisma.conversation.count(),
+            this.prisma.message.count(),
+            this.prisma.conversation.findMany({
+                orderBy: { createdAt: 'desc' },
+                take: 10,
+                include: {
+                    _count: { select: { messages: true } },
+                },
+            }),
+        ]);
+
+        // Get unique users
+        const uniqueUsers = await this.prisma.conversation.groupBy({
+            by: ['userId'],
+        });
+
+        // Get message counts by role
+        const messagesByRole = await this.prisma.message.groupBy({
+            by: ['role'],
+            _count: true,
+        });
+
+        return {
+            totalConversations,
+            totalMessages,
+            totalUsers: uniqueUsers.length,
+            avgMessagesPerConversation: totalConversations > 0
+                ? (totalMessages / totalConversations).toFixed(2)
+                : 0,
+            messagesByRole: messagesByRole.map((item) => ({
+                role: item.role,
+                count: item._count,
+            })),
+            recentConversations: recentConversations.map((c) => ({
+                id: c.id,
+                userId: c.userId,
+                messageCount: c._count.messages,
+                createdAt: c.createdAt,
+            })),
+        };
+    }
 }
