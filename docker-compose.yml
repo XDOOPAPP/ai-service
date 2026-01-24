@@ -18,6 +18,7 @@ services:
       - AI_CONFIDENCE_THRESHOLD=0.7
       - ANOMALY_ZSCORE_THRESHOLD=2.5
       - BUDGET_ALERT_THRESHOLDS=50,80,100
+    restart: unless-stopped
     networks:
       - fepa-network
 
