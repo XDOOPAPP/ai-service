@@ -7,4 +7,4 @@ npx prisma migrate deploy
 echo "✅ Migrations completed"
 echo "🚀 Starting AI Service..."
 
-exec node dist/main.js
+exec node dist/src/main.js
