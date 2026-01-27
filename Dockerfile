@@ -34,10 +34,11 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/prisma ./prisma
-COPY entrypoint.sh ./
+COPY entrypoint.sh /app/entrypoint.sh
 
-RUN chmod +x entrypoint.sh
+# Normalize line endings and ensure executable permissions
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 EXPOSE 3008
 
-CMD ["./entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
